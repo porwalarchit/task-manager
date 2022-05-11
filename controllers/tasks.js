@@ -1,4 +1,5 @@
 const res = require("express/lib/response");
+const { findOneAndDelete } = require("../models/taskSchema.js");
 const Task = require("../models/taskSchema.js")
 
 // get all the tasks
@@ -49,8 +50,24 @@ const updateTask = (req, res) => {
 }
 
 // Delete task by Id
-const deleteTask = (req, res) => {
-    res.send("Delete Task");
+const deleteTask = async (req, res) => {
+    try {
+        const { id: taskId } = req.params;
+        const deleteTask = await Task.findOneAndDelete({ _id: taskId });
+        if (!deleteTask) {
+            return res.status(404).json({
+                message: `No task with Id: ${taskId}`
+            })
+        }
+        res.status(200).json({ 
+            message:"Task Deleted",
+            deleteTask 
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error
+        })
+    }
 }
 
 module.exports = {
