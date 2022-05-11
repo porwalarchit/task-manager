@@ -30,12 +30,12 @@ const createTask = async (req, res) => {
 // Get a particular task by Id
 const getTask = async (req, res) => {
     try {
-        const { id: taskId } = req.params;
-        const getTaskbyId = await Task.findOne({ _id: taskId });
+        const { id: taskID } = req.params;
+        const getTaskbyId = await Task.findOne({ _id: taskID });
 
         if (!getTaskbyId) {
-            return res.status(440).json({
-                message: `Task doesn't exist with Id: ${taskId}`,
+            return res.status(404).json({
+                message: `Task doesn't exist with Id: ${taskID}`,
             })
         }
         res.status(200).json({ getTaskbyId });
@@ -44,19 +44,14 @@ const getTask = async (req, res) => {
     }
 }
 
-// Update task by Id
-const updateTask = (req, res) => {
-    res.send("Update Task");
-}
-
 // Delete task by Id
 const deleteTask = async (req, res) => {
     try {
-        const { id: taskId } = req.params;
-        const deleteTask = await Task.findOneAndDelete({ _id: taskId });
+        const { id: taskID } = req.params;
+        const deleteTask = await Task.findOneAndDelete({ _id: taskID });
         if (!deleteTask) {
             return res.status(404).json({
-                message: `No task with Id: ${taskId}`
+                message: `No task with Id: ${taskID}`
             })
         }
         res.status(200).json({ 
@@ -67,6 +62,30 @@ const deleteTask = async (req, res) => {
         res.status(500).json({
             message: error
         })
+    }
+}
+
+// Update task by Id
+const updateTask = async(req, res) => {
+    try {
+        const {id:taskID} = req.params;
+        const updateTask = await Task.findOneAndUpdate({_id:taskID}, req.body,{
+            new:true,
+            runValidators:true
+        });
+
+        if(!updateTask){
+            return res.status(404).json({
+                message: `No task with Id: ${taskID}`
+            })
+        }
+
+        res.status(200).json({
+            message:"Task Updated",
+            updateTask
+        })
+    } catch (error) {
+        res.status(500).json({msg:error})
     }
 }
 

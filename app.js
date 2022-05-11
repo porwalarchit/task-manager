@@ -6,6 +6,7 @@ const tasks = require("./routes/tasks.js");
 require("dotenv").config();
 
 // middleware
+app.use(express.static('./public'))
 app.use(express.json());
 
 app.use('/api/v1/tasks', tasks);
