@@ -31,14 +31,14 @@ const createTask = async (req, res) => {
 const getTask = async (req, res) => {
     try {
         const { id: taskID } = req.params;
-        const getTaskbyId = await Task.findOne({ _id: taskID });
+        const task = await Task.findOne({ _id: taskID });
 
-        if (!getTaskbyId) {
+        if (!task) {
             return res.status(404).json({
                 message: `Task doesn't exist with Id: ${taskID}`,
             })
         }
-        res.status(200).json({ getTaskbyId });
+        res.status(200).json({ task });
     } catch (error) {
         res.status(500).json({ msg: error })
     }
@@ -48,15 +48,15 @@ const getTask = async (req, res) => {
 const deleteTask = async (req, res) => {
     try {
         const { id: taskID } = req.params;
-        const deleteTask = await Task.findOneAndDelete({ _id: taskID });
-        if (!deleteTask) {
+        const task = await Task.findOneAndDelete({ _id: taskID });
+        if (!task) {
             return res.status(404).json({
                 message: `No task with Id: ${taskID}`
             })
         }
         res.status(200).json({ 
             message:"Task Deleted",
-            deleteTask 
+            task 
         })
     } catch (error) {
         res.status(500).json({
@@ -69,12 +69,12 @@ const deleteTask = async (req, res) => {
 const updateTask = async(req, res) => {
     try {
         const {id:taskID} = req.params;
-        const updateTask = await Task.findOneAndUpdate({_id:taskID}, req.body,{
+        const task = await Task.findOneAndUpdate({_id:taskID}, req.body,{
             new:true,
             runValidators:true
         });
 
-        if(!updateTask){
+        if(!task){
             return res.status(404).json({
                 message: `No task with Id: ${taskID}`
             })
@@ -82,7 +82,7 @@ const updateTask = async(req, res) => {
 
         res.status(200).json({
             message:"Task Updated",
-            updateTask
+            task
         })
     } catch (error) {
         res.status(500).json({msg:error})
